@@ -168,7 +168,8 @@ h6 {
     height: 100%;
 }
 
-.overlay, .card-overlay {
+.overlay,
+.card-overlay {
     position: absolute;
     top: 0;
     bottom: 0;
@@ -182,7 +183,8 @@ h6 {
     background-color: #008080c3;
 }
 
-.overlay p, .card-overlay p {
+.overlay p,
+.card-overlay p {
     text-align: center;
     font-size: 1.5em;
     color: var(--white);
@@ -245,4 +247,11 @@ h6 {
 
 .card-content a:hover {
     text-decoration: underline;
+}
+
+.ellipses {
+    white-space: nowrap;
+    width: 90%;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }

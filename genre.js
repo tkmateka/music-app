@@ -45,13 +45,15 @@ const addCards = (data, i, channel) => {
     const itemsContainer = document.getElementById(`itemsContainer${i}`);
 
     data.map((_genre, _i) => {
+        let title = _genre.title ? _genre.title : _genre.name;
+
         itemsContainer.innerHTML += `
             <div class="card flex column">
                 <div id="cardImg_${channel}_${_i}" onmouseover="updateUi(${_i}, '${channel}')" class="card-img relative">
                     <div class="card-overlay">
-                        <p class="card-title">${_genre.title ? _genre.title : _genre.name}</p>
+                        <p class="card-title ellipses" title="${title}">${title}</p>
                         <div class="card-icons flex gap-05em">
-                            <div id="play_${_i}_${channel}">
+                            <div id="play_${_i}_${channel}" onclick="play('${channel}', ${_i})">
                                 <i class="flex center-center fa fa-play"></i>
                             </div>
                             <div id="favorite_${_i}_${channel}" hidden>
@@ -63,15 +65,40 @@ const addCards = (data, i, channel) => {
                         </div>
                     </div>
                 </div>
-                <div class="card-content">
-                    <a href="#">Hot Pop</a> <br>
-                    <small>50 tracks - 711,052 fans</small>
-                </div>
+                ${(channel === "albums") ? `
+                        <div class="card-content">
+                            <a href="#" ellipses title="${title}">${title}</a> <br>
+                            <small ellipses title="${_genre.artist.name}">by ${_genre.artist.name}</small>
+                            ${_genre.explicit_lyrics ? `
+                                    <button class="btn login-btn">Explicit</button>
+                                ` : ``
+                }
+                        </div>
+                    ` : (channel === "playlists") ? `
+                        <div class="card-content">
+                            <a href="#" ellipses title="${title}">${title}</a> <br>
+                            <small>${_genre.nb_tracks} tracks - <br>Created ${_genre.creation_date.split(' ')[0]}</small>
+                        </div>
+                    ` : `
+                        <div class="card-content">
+                            <a href="#" ellipses title="${title}">${title}</a> <br>
+                            ${(channel === "tracks") ?
+                `<small>${_genre.rank} rank ${_genre.explicit_lyrics ? '<br> <button class="btn login-btn">Explicit</button>' : ''}</small>`
+                : ''
+            }
+                        </div>
+                    `
+            }
             </div>
         `;
 
         document.getElementById(`cardImg_${channel}_${_i}`).style.backgroundImage = _genre.picture_xl ? `url(${_genre.picture_xl})` : _genre.cover_xl ? `url(${_genre.cover_xl})` : `url(${getImageUrl(_genre.md5_image)})`;
     });
+}
+
+const play = (c, _i) => {
+    sessionStorage.setItem('trackToPlay', JSON.stringify(groupOfChannels[c][_i]));
+    window.location = 'play.html';
 }
 
 const updateUi = (_i, channel, _genre) => {
